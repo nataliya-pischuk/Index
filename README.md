@@ -33,16 +33,18 @@ where date(p.payment_date) = '2005-07-30' and p.payment_date = r.rental_date and
 group by c.last_name, c.first_name;
 ```
 ```
+# проосматриваем индексы
 select *
 from INFORMATION_SCHEMA.STATISTICS
 where TABLE_NAME='payment';
 
+# создаем новый индекс
 create index idx_payment_date on payment(payment_date);
 
+# выполняем оптимизированный запрос
 select concat(c.last_name, ' ', c.first_name), sum(p.amount)
 from payment p, rental r, customer c
 where p.payment_date >= '2005-07-30 00:00:00' and p.payment_date < date_add('2005-07-30 00:00:00', interval 1 day) and p.payment_date = r.rental_date and r.customer_id = c.customer_id
 group by c.last_name, c.first_name;
 
-drop index idx_payment_date on payment;
 ```
